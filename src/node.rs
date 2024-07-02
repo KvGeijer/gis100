@@ -3,6 +3,8 @@ use bevy::{
     sprite::{MaterialMesh2dBundle, Mesh2dHandle},
 };
 
+pub const NODE_RADIUS: f32 = 1.0;
+
 #[derive(Bundle)]
 pub struct NodeBundle {
     scene: MaterialMesh2dBundle<ColorMaterial>,
@@ -14,13 +16,17 @@ pub fn spawn_node(
     materials: &mut ResMut<Assets<ColorMaterial>>,
     x: f32,
     y: f32,
-) {
-    commands.spawn((NodeBundle {
-        scene: MaterialMesh2dBundle {
-            mesh: Mesh2dHandle(meshes.add(Circle { radius: 1.0 })),
-            material: materials.add(Color::hsl(280., 0.25, 0.7)),
-            transform: Transform::from_xyz(x, y, 0.0),
-            ..default()
-        },
-    },));
+) -> Entity {
+    commands
+        .spawn((NodeBundle {
+            scene: MaterialMesh2dBundle {
+                mesh: Mesh2dHandle(meshes.add(Circle {
+                    radius: NODE_RADIUS,
+                })),
+                material: materials.add(Color::hsl(280., 0.25, 0.7)),
+                transform: Transform::from_xyz(x, y, 0.0),
+                ..default()
+            },
+        },))
+        .id()
 }

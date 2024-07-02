@@ -1,11 +1,13 @@
 use asset_loader::AssetLoaderPlugin;
 use bevy::prelude::*;
 use camera::CameraPlugin;
+use edge::spawn_edge;
 
 use crate::node::spawn_node;
 
 mod asset_loader;
 mod camera;
+mod edge;
 mod node;
 mod spring_layout;
 
@@ -27,34 +29,40 @@ fn spawn_example_graph(
     const OFFSET_X: f32 = 2.5;
     const OFFSET_Y: f32 = 2.5;
 
-    spawn_node(&mut commands, &mut meshes, &mut materials, 0., 0.);
+    let a = spawn_node(&mut commands, &mut meshes, &mut materials, 0., 0.);
 
-    spawn_node(
+    let b = spawn_node(
         &mut commands,
         &mut meshes,
         &mut materials,
         OFFSET_X,
         OFFSET_Y,
     );
-    spawn_node(
+    let c = spawn_node(
         &mut commands,
         &mut meshes,
         &mut materials,
         OFFSET_X,
         -OFFSET_Y,
     );
-    spawn_node(
+    let d = spawn_node(
         &mut commands,
         &mut meshes,
         &mut materials,
         -OFFSET_X,
         OFFSET_Y,
     );
-    spawn_node(
+    let e = spawn_node(
         &mut commands,
         &mut meshes,
         &mut materials,
         -OFFSET_X,
         -OFFSET_Y,
     );
+
+    spawn_edge(&mut commands, &mut meshes, &mut materials, a, b);
+    // spawn_edge(&mut commands, &mut meshes, &mut materials, b, c);
+    // spawn_edge(&mut commands, &mut meshes, &mut materials, c, d);
+    // spawn_edge(&mut commands, &mut meshes, &mut materials, d, e);
+    // spawn_edge(&mut commands, &mut meshes, &mut materials, e, a);
 }
