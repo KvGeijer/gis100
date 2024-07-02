@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::node::{NodeMesh, NODE_RADIUS};
+use crate::node::{NodeMarker, NODE_RADIUS};
 
 pub struct EdgePlugin;
 
@@ -22,19 +22,15 @@ pub fn spawn_edge(commands: &mut Commands, left: Entity, right: Entity) {
     commands.spawn(Edge { left, right });
 }
 
-fn draw_edges(mut gizmos: Gizmos, edges: Query<&Edge>, nodes: Query<&NodeMesh>) {
+fn draw_edges(mut gizmos: Gizmos, edges: Query<&Edge>, nodes: Query<&Transform, With<NodeMarker>>) {
     for Edge { left, right } in edges.iter() {
         let left_v3 = nodes
             .get(*left)
             .expect("Could not find node neighbor of edge.")
-            .mesh
-            .transform
             .translation;
         let right_v3 = nodes
             .get(*right)
             .expect("Could not find node neighbor of edge.")
-            .mesh
-            .transform
             .translation;
 
         let lr = right_v3 - left_v3;
