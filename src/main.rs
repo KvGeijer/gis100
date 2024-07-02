@@ -1,7 +1,7 @@
 use asset_loader::AssetLoaderPlugin;
 use bevy::prelude::*;
 use camera::CameraPlugin;
-use edge::spawn_edge;
+use edge::{spawn_edge, EdgePlugin};
 
 use crate::node::spawn_node;
 
@@ -17,6 +17,7 @@ fn main() {
         // My own systems
         .add_plugins(AssetLoaderPlugin)
         .add_plugins(CameraPlugin)
+        .add_plugins(EdgePlugin)
         .add_systems(PostStartup, spawn_example_graph)
         .run();
 }
@@ -60,9 +61,9 @@ fn spawn_example_graph(
         -OFFSET_Y,
     );
 
-    spawn_edge(&mut commands, &mut meshes, &mut materials, a, b);
-    // spawn_edge(&mut commands, &mut meshes, &mut materials, b, c);
-    // spawn_edge(&mut commands, &mut meshes, &mut materials, c, d);
-    // spawn_edge(&mut commands, &mut meshes, &mut materials, d, e);
-    // spawn_edge(&mut commands, &mut meshes, &mut materials, e, a);
+    spawn_edge(&mut commands, a, b);
+    spawn_edge(&mut commands, b, c);
+    spawn_edge(&mut commands, c, e);
+    spawn_edge(&mut commands, e, d);
+    spawn_edge(&mut commands, d, b);
 }

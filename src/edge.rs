@@ -1,54 +1,52 @@
-use std::collections::LinkedList;
+use bevy::prelude::*;
 
-use bevy::{
-    prelude::*,
-    render::{mesh::PrimitiveTopology, render_asset::RenderAssetUsages},
-    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
-};
+use crate::node::{NodeMesh, NODE_RADIUS};
 
-#[derive(Bundle)]
-pub struct EdgeBundle {
-    mesh: MaterialMesh2dBundle<ColorMaterial>,
-    edge: EdgeComponent,
+pub struct EdgePlugin;
+
+impl Plugin for EdgePlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, draw_edges);
+    }
 }
 
 #[derive(Component)]
-pub struct EdgeComponent {
+pub struct Edge {
     left: Entity,
     right: Entity,
     // directed: bool,
 }
 
-pub fn spawn_edge(
-    commands: &mut Commands,
-    meshes: &mut ResMut<Assets<Mesh>>,
-    materials: &mut ResMut<Assets<ColorMaterial>>,
-    left: Entity,
-    right: Entity,
-) {
-    let line_mesh = Line {
-        from: Vec3::splat(0.0),
-        to: Vec3::splat(3.0),
-    };
-    commands.spawn(EdgeBundle {
-        mesh: MaterialMesh2dBundle {
-            mesh: Mesh2dHandle(meshes.add(line_mesh)),
-            material: materials.add(Color::hsl(200.0, 0.25, 0.75)),
-            ..default()
-        },
-        edge: EdgeComponent { left, right },
-    });
+/// Spawns an edge entity between two node entities
+pub fn spawn_edge(commands: &mut Commands, left: Entity, right: Entity) {
+    commands.spawn(Edge { left, right });
 }
 
-#[derive(Debug, Clone)]
-pub struct Line {
-    from: Vec3,
-    to: Vec3,
-}
+fn draw_edges(mut gizmos: Gizmos, edges: Query<&Edge>, nodes: Query<&NodeMesh>) {
+    for Edge { left, right } in edges.iter() {
+        let left_v3 = nodes
+            .get(*left)
+            .expect("Could not find node neighbor of edge.")
+            .mesh
+            .transform
+            .translation;
+        let right_v3 = nodes
+            .get(*right)
+            .expect("Could not find node neighbor of edge.")
+            .mesh
+            .transform
+            .translation;
 
-impl From<Line> for Mesh {
-    fn from(value: Line) -> Self {
-        Mesh::new(PrimitiveTopology::LineList, RenderAssetUsages::RENDER_WORLD)
-            .with_inserted_attribute(Mesh::ATTRIBUTE_POSITION, vec![value.from, value.to])
+        let lr = right_v3 - left_v3;
+        if lr.length() > 2.0 * NODE_RADIUS {
+            // Large enough to draw
+            let lr_dir = lr.normalize();
+
+            gizmos.line_2d(
+                (left_v3 + lr_dir).truncate(),
+                (right_v3 - lr_dir).truncate(),
+                Color::ORANGE_RED,
+            )
+        }
     }
 }

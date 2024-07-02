@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 #[derive(Resource, Debug, Default)]
 pub struct SceneAssets {
-    pub node: Handle<Scene>,
+    _node: Handle<Scene>,
 }
 
 pub struct AssetLoaderPlugin;
@@ -16,6 +16,6 @@ impl Plugin for AssetLoaderPlugin {
 
 fn load_assets(mut scene_assets: ResMut<SceneAssets>, asset_server: Res<AssetServer>) {
     *scene_assets = SceneAssets {
-        node: asset_server.load("planet.glb#Scene0"),
+        _node: asset_server.load("planet.glb#Scene0"),
     }
 }
