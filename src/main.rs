@@ -1,7 +1,10 @@
+use std::collections::HashSet;
+
 use asset_loader::AssetLoaderPlugin;
 use bevy::prelude::*;
 use camera::CameraPlugin;
 use edge::{spawn_edge, EdgePlugin};
+use rand::Rng;
 use spring_layout::SpringLayoutPlugin;
 
 use crate::node::spawn_node;
@@ -19,7 +22,8 @@ fn main() {
         .add_plugins(AssetLoaderPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(EdgePlugin)
-        .add_systems(Startup, spawn_example_graph)
+        // .add_systems(Startup, spawn_example_graph)
+        .add_systems(Startup, spawn_random_graph)
         .add_plugins(SpringLayoutPlugin)
         .run();
 }
@@ -69,4 +73,49 @@ fn spawn_example_graph(
     spawn_edge(&mut commands, e, d);
     spawn_edge(&mut commands, d, a);
     spawn_edge(&mut commands, c, a);
+}
+
+fn spawn_random_graph(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    const NODES: usize = 5;
+    const EDGES: usize = 8;
+
+    const XMIN: f32 = -16.0;
+    const XMAX: f32 = 16.0;
+    const YMIN: f32 = -10.0;
+    const YMAX: f32 = 10.0;
+
+    let mut rng = rand::thread_rng();
+
+    let nodes: Vec<Entity> = (0..NODES)
+        .map(|_| {
+            spawn_node(
+                &mut commands,
+                &mut meshes,
+                &mut materials,
+                rng.gen_range(XMIN..=XMAX),
+                rng.gen_range(YMIN..=YMAX),
+            )
+        })
+        .collect();
+
+    let mut edges: HashSet<(Entity, Entity)> = HashSet::new();
+
+    for (left, right) in nodes.iter().cloned().zip(nodes.iter().skip(1).cloned()) {
+        spawn_edge(&mut commands, left, right);
+        edges.insert((left, right));
+    }
+
+    while edges.len() < EDGES {
+        let left = nodes[rng.gen_range(0..NODES)];
+        let right = nodes[rng.gen_range(0..NODES)];
+
+        if !edges.contains(&(left, right)) || edges.contains(&(right, left)) {
+            spawn_edge(&mut commands, left, right);
+            edges.insert((left, right));
+        }
+    }
 }

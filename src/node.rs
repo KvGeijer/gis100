@@ -21,6 +21,7 @@ pub fn spawn_node(
     x: f32,
     y: f32,
 ) -> Entity {
+    info!("Spawning node at {x} {y}");
     let mesh = MaterialMesh2dBundle {
         mesh: Mesh2dHandle(meshes.add(Circle {
             radius: NODE_RADIUS,
