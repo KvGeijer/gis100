@@ -85,7 +85,7 @@ fn spring_update_force(
 
             let pos_diff = other_transform.translation - self_transform.translation;
             let dist_offset = pos_diff.length() - DESIRED_DISTANCE;
-            self_force.value += dist_offset * pos_diff.normalize() * SPRING_CONSTANT;
+            self_force.value += dist_offset * pos_diff.normalize_or_zero() * SPRING_CONSTANT;
         }
     }
 }
@@ -93,6 +93,7 @@ fn spring_update_force(
 fn spring_update_position(mut query: Query<(&SpringForce, &mut Transform)>, time: Res<Time>) {
     for (force, mut transform) in query.iter_mut() {
         let vel = force.value * time.delta_seconds() * FORCE_DAMPENING;
+
         let restricted_vel = if vel.length_squared() > MAX_MOVE_SQ {
             vel.normalize() * MAX_MOVE
         } else {
