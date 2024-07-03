@@ -11,7 +11,7 @@ const REPULSION_CONSTANT: f32 = 8.0;
 const DESIRED_DISTANCE: f32 = 4.0 * NODE_RADIUS;
 const SPRING_CONSTANT: f32 = 100.0;
 const FORCE_DAMPENING: f32 = 0.1;
-const MAX_MOVE: f32 = 4.0 * NODE_RADIUS;
+const MAX_MOVE: f32 = 1.0 * NODE_RADIUS;
 const MAX_MOVE_SQ: f32 = MAX_MOVE * MAX_MOVE;
 
 #[derive(Component)]
@@ -66,8 +66,8 @@ fn spring_update_force(
             let len_sq = pos_diff.length_squared();
             if len_sq > 0.0 {
                 // Can remove normalize to change from electrical to gravitational pull
-                force.value -=
-                    pos_diff.normalize() / pos_diff.length_squared() * REPULSION_CONSTANT;
+                force.value -= pos_diff / pos_diff.length_squared() * REPULSION_CONSTANT;
+                // pos_diff.normalize() / pos_diff.length_squared() * REPULSION_CONSTANT;
             }
         }
     }
