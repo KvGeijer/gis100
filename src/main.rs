@@ -2,6 +2,7 @@ use asset_loader::AssetLoaderPlugin;
 use bevy::prelude::*;
 use camera::CameraPlugin;
 use edge::{spawn_edge, EdgePlugin};
+use spring_layout::SpringLayoutPlugin;
 
 use crate::node::spawn_node;
 
@@ -18,7 +19,8 @@ fn main() {
         .add_plugins(AssetLoaderPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(EdgePlugin)
-        .add_systems(PostStartup, spawn_example_graph)
+        .add_systems(Startup, spawn_example_graph)
+        .add_plugins(SpringLayoutPlugin)
         .run();
 }
 

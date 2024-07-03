@@ -12,8 +12,8 @@ impl Plugin for EdgePlugin {
 
 #[derive(Component)]
 pub struct Edge {
-    left: Entity,
-    right: Entity,
+    pub left: Entity,
+    pub right: Entity,
     // directed: bool,
 }
 
@@ -22,7 +22,11 @@ pub fn spawn_edge(commands: &mut Commands, left: Entity, right: Entity) {
     commands.spawn(Edge { left, right });
 }
 
-fn draw_edges(mut gizmos: Gizmos, edges: Query<&Edge>, nodes: Query<&Transform, With<NodeMarker>>) {
+pub fn draw_edges(
+    mut gizmos: Gizmos,
+    edges: Query<&Edge>,
+    nodes: Query<&Transform, With<NodeMarker>>,
+) {
     for Edge { left, right } in edges.iter() {
         let left_v3 = nodes
             .get(*left)
