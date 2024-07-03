@@ -67,5 +67,6 @@ fn spawn_example_graph(
     spawn_edge(&mut commands, b, c);
     spawn_edge(&mut commands, c, e);
     spawn_edge(&mut commands, e, d);
-    spawn_edge(&mut commands, d, b);
+    spawn_edge(&mut commands, d, a);
+    spawn_edge(&mut commands, c, a);
 }
