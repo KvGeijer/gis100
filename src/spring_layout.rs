@@ -6,7 +6,7 @@ use crate::{
     spawn_example_graph,
 };
 
-const CENTER_ATTRACTION: f32 = 0.2;
+const CENTER_ATTRACTION: f32 = 0.1;
 const REPULSION_CONSTANT: f32 = 2.0;
 const DESIRED_DISTANCE: f32 = 4.0 * NODE_RADIUS;
 const SPRING_CONSTANT: f32 = 100.0;
@@ -33,9 +33,10 @@ impl Plugin for SpringLayoutPlugin {
         app.add_systems(
             Update,
             (
-                spring_update_force.before(spring_update_position),
+                spring_update_force,
                 spring_update_position.before(draw_edges),
-            ),
+            )
+                .chain(),
         )
         .add_systems(PostStartup, apply_spring_layout.after(spawn_example_graph));
     }
@@ -56,8 +57,7 @@ fn spring_update_force(
         // Apply similar pull towards the center
         let len_sq = self_transform.translation.length_squared();
         if len_sq > 0.0 {
-            force.value =
-                -CENTER_ATTRACTION * self_transform.translation.normalize_or_zero() / len_sq;
+            force.value = -CENTER_ATTRACTION * self_transform.translation.normalize_or_zero();
         }
 
         // Apply repulsive force between nodes
