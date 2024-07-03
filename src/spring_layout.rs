@@ -6,8 +6,8 @@ use crate::{
     spawn_example_graph,
 };
 
-const CENTER_ATTRACTION: f32 = 0.1;
-const REPULSION_CONSTANT: f32 = 2.0;
+const CENTER_ATTRACTION: f32 = 1.0;
+const REPULSION_CONSTANT: f32 = 8.0;
 const DESIRED_DISTANCE: f32 = 4.0 * NODE_RADIUS;
 const SPRING_CONSTANT: f32 = 100.0;
 const FORCE_DAMPENING: f32 = 0.1;
