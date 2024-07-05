@@ -45,7 +45,7 @@ pub fn draw_edges(
             gizmos.line_2d(
                 (left_v3 + lr_dir).truncate(),
                 (right_v3 - lr_dir).truncate(),
-                Color::ORANGE_RED,
+                Color::linear_rgb(204., 102., 0.),
             )
         }
     }
