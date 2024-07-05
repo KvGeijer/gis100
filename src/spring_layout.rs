@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, tasks::futures_lite::stream::Then};
 
 use crate::{
     edge::{draw_edges, Edge},
@@ -11,7 +11,7 @@ const REPULSION_CONSTANT: f32 = 8.0;
 const DESIRED_DISTANCE: f32 = 4.0 * NODE_RADIUS;
 const SPRING_CONSTANT: f32 = 100.0;
 const FORCE_DAMPENING: f32 = 0.1;
-const MAX_MOVE: f32 = 1.0 * NODE_RADIUS;
+const MAX_MOVE: f32 = 8.0 * NODE_RADIUS;
 const MAX_MOVE_SQ: f32 = MAX_MOVE * MAX_MOVE;
 
 #[derive(Component)]
@@ -53,6 +53,9 @@ fn spring_update_force(
     other_query: Query<&Transform, With<NodeMarker>>,
     edge_query: Query<&Edge>,
 ) {
+    const NODE_RADIUS_SQ: f32 = NODE_RADIUS * NODE_RADIUS;
+    const CLOSEST_DIST_SQ: f32 = NODE_RADIUS_SQ * 0.01;
+
     for (mut force, self_transform) in self_query.iter_mut() {
         // Apply similar pull towards the center
         let len_sq = self_transform.translation.length_squared();
@@ -64,10 +67,13 @@ fn spring_update_force(
         for other_transform in other_query.iter() {
             let pos_diff = other_transform.translation - self_transform.translation;
             let len_sq = pos_diff.length_squared();
-            if len_sq > 0.0 {
-                // Can remove normalize to change from electrical to gravitational pull
-                force.value -= pos_diff / pos_diff.length_squared() * REPULSION_CONSTANT;
-                // pos_diff.normalize() / pos_diff.length_squared() * REPULSION_CONSTANT;
+            if len_sq > 4.0 * NODE_RADIUS_SQ {
+                // Add the normal force, counting from edges
+                force.value -= pos_diff / (pos_diff.length_squared() - 4.0 * NODE_RADIUS_SQ)
+                    * REPULSION_CONSTANT;
+            } else {
+                // Very close together, but as we count from edges, if overlapping we set to close to inf
+                force.value -= pos_diff / CLOSEST_DIST_SQ * REPULSION_CONSTANT;
             }
         }
     }
