@@ -80,8 +80,8 @@ fn spawn_random_graph(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    const NODES: usize = 5;
-    const EDGES: usize = 8;
+    const NODES: usize = 8;
+    const EDGES: usize = 10;
 
     const XMIN: f32 = -16.0;
     const XMAX: f32 = 16.0;
@@ -113,7 +113,7 @@ fn spawn_random_graph(
         let left = nodes[rng.gen_range(0..NODES)];
         let right = nodes[rng.gen_range(0..NODES)];
 
-        if !edges.contains(&(left, right)) || edges.contains(&(right, left)) {
+        if !(edges.contains(&(left, right)) || edges.contains(&(right, left))) {
             spawn_edge(&mut commands, left, right);
             edges.insert((left, right));
         }
