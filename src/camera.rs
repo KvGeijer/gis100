@@ -1,4 +1,5 @@
 use bevy::{prelude::*, render::camera::ScalingMode};
+// use bevy_pancam::{PanCam, PanCamPlugin}; // Can add this back for panning. But might conflict with node selection?
 
 // const CAMERA_DISTANCE: f32 = 40.0;
 
@@ -11,7 +12,9 @@ pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_camera);
+        app
+            //     .add_plugins(PanCamPlugin)
+            .add_systems(Startup, spawn_camera);
     }
 }
 
@@ -20,7 +23,10 @@ fn spawn_camera(mut commands: Commands) {
     let mut camera = Camera2dBundle::default();
     camera.projection.scaling_mode = ScalingMode::FixedVertical(CAMERA_Y_SIZE);
 
-    commands.spawn((camera, MainCamera));
+    commands.spawn((
+        camera, MainCamera,
+        // PanCam::default()
+    ));
 
     // TODO: Understand why this does not work, and how to fix it
     // Would be cool to have a 3d camera with poster mode for 2d things, being able to rotate the view
