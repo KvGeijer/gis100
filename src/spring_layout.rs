@@ -31,7 +31,7 @@ impl Plugin for SpringLayoutPlugin {
     fn build(&self, app: &mut App) {
         // TODO: Conditionally run these depending on a resource
         app.add_systems(
-            Update,
+            FixedUpdate,
             (
                 spring_update_force,
                 spring_update_position.before(draw_edges),
