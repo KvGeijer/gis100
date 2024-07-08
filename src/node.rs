@@ -24,7 +24,7 @@ pub fn spawn_node(
                 radius: NODE_RADIUS,
             })
             .into(),
-        material: materials.add(Color::srgb(0.77, 0.67, 0.83)),
+        material: materials.add(Color::srgb(0.77, 0.74, 0.83)),
         transform: Transform::from_xyz(x, y, 0.0),
         ..default()
     };

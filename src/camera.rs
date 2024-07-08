@@ -1,3 +1,4 @@
+use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::{prelude::*, render::camera::ScalingMode};
 // use bevy_pancam::{PanCam, PanCamPlugin}; // Can add this back for panning. But might conflict with node selection?
 
@@ -20,11 +21,20 @@ impl Plugin for CameraPlugin {
 
 fn spawn_camera(mut commands: Commands) {
     // The sizes are adapted so that a node radius is the unitary unit
-    let mut camera = Camera2dBundle::default();
+    let mut camera = Camera2dBundle {
+        camera: Camera {
+            hdr: true,
+            ..default()
+        },
+        transform: Transform::from_xyz(0., 0., 20.),
+        ..default()
+    };
     camera.projection.scaling_mode = ScalingMode::FixedVertical(CAMERA_Y_SIZE);
 
     commands.spawn((
-        camera, MainCamera,
+        camera,
+        MainCamera,
+        BloomSettings::NATURAL,
         // PanCam::default()
     ));
 
