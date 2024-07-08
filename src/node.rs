@@ -1,7 +1,4 @@
-use bevy::{
-    prelude::*,
-    sprite::{MaterialMesh2dBundle, Mesh2dHandle},
-};
+use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
 pub const NODE_RADIUS: f32 = 1.0;
 
@@ -22,10 +19,12 @@ pub fn spawn_node(
     y: f32,
 ) -> Entity {
     let mesh = MaterialMesh2dBundle {
-        mesh: Mesh2dHandle(meshes.add(Circle {
-            radius: NODE_RADIUS,
-        })),
-        material: materials.add(Color::hsl(280., 0.25, 0.7)),
+        mesh: meshes
+            .add(Circle {
+                radius: NODE_RADIUS,
+            })
+            .into(),
+        material: materials.add(Color::srgb(0.77, 0.67, 0.83)),
         transform: Transform::from_xyz(x, y, 0.0),
         ..default()
     };
