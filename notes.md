@@ -17,13 +17,5 @@ Longer goals:
 
 Short term goals:
 - Define a graph as a json file or similarly
-- Display a graph
 - Menu for launching and selecting a graph to work on
 
-## ECS structure
-
-- Node is an entity with components:
-	- Id? Maybe not a component actually.
-	- Neighbor ids
-	- Position
-	- and so on...
