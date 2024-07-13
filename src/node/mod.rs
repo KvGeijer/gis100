@@ -1,5 +1,8 @@
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use bevy_mod_picking::prelude::*;
+use selected::SelectedPlugin;
+
+mod selected;
 
 pub const NODE_RADIUS: f32 = 1.0;
 
@@ -9,7 +12,9 @@ impl Plugin for NodePlugin {
         app.add_event::<NodeClickedEvent>()
             .insert_resource(NodeColor {
                 color: Color::srgb(0.77, 0.74, 0.83),
-            });
+            })
+            .add_plugins(SelectedPlugin)
+            ;
     }
 }
 

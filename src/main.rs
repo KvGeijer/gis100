@@ -7,7 +7,6 @@ use camera::CameraPlugin;
 use edge::{spawn_edge, EdgePlugin};
 use node::{NodeColor, NodePlugin};
 use rand::Rng;
-use selected::SelectedPlugin;
 use spring_layout::SpringLayoutPlugin;
 
 use crate::node::spawn_node;
@@ -16,7 +15,6 @@ mod asset_loader;
 mod camera;
 mod edge;
 mod node;
-mod selected;
 mod spring_layout;
 
 fn main() {
@@ -29,7 +27,6 @@ fn main() {
         .add_plugins(AssetLoaderPlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(EdgePlugin)
-        .add_plugins(SelectedPlugin)
         // .add_systems(Startup, spawn_example_graph)
         .add_systems(Startup, spawn_random_graph)
         .add_plugins(SpringLayoutPlugin)
