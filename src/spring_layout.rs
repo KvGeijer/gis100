@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     edge::{draw_edges, Edge},
-    node::{NodeMarker, NODE_RADIUS},
+    node::{Dragged, NodeMarker, NODE_RADIUS},
     spawn_example_graph,
 };
 
@@ -90,7 +90,7 @@ fn spring_update_force(
     }
 }
 
-fn spring_update_position(mut query: Query<(&SpringForce, &mut Transform)>, time: Res<Time>) {
+fn spring_update_position(mut query: Query<(&SpringForce, &mut Transform), Without<Dragged>>, time: Res<Time>) {
     for (force, mut transform) in query.iter_mut() {
         let vel = force.value * time.delta_seconds() * FORCE_DAMPENING;
 

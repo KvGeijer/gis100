@@ -1,19 +1,30 @@
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use bevy_mod_picking::prelude::*;
+use drag::DragPlugin;
 use selected::SelectedPlugin;
 
+mod drag;
+mod events;
 mod selected;
+
+use events::{NodeClickEvent, NodeDragEndEvent, NodeDragEvent, NodeDragStartEvent};
+
+pub use drag::Dragged;
 
 pub const NODE_RADIUS: f32 = 1.0;
 
 pub struct NodePlugin;
 impl Plugin for NodePlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<NodeClickedEvent>()
+        app.add_event::<NodeClickEvent>()
+            .add_event::<NodeDragStartEvent>()
+            .add_event::<NodeDragEvent>()
+            .add_event::<NodeDragEndEvent>()
             .insert_resource(NodeColor {
                 color: Color::srgb(0.77, 0.74, 0.83),
             })
             .add_plugins(SelectedPlugin)
+            .add_plugins(DragPlugin)
             ;
     }
 }
@@ -56,18 +67,10 @@ pub fn spawn_node(
                 mesh,
                 marker: NodeMarker,
             },
-            On::<Pointer<Click>>::send_event::<NodeClickedEvent>(),
+            On::<Pointer<Click>>::send_event::<NodeClickEvent>(),
+            On::<Pointer<DragStart>>::send_event::<NodeDragStartEvent>(),
+            On::<Pointer<Drag>>::send_event::<NodeDragEvent>(),
+            On::<Pointer<DragEnd>>::send_event::<NodeDragEndEvent>(),
         ))
         .id()
-}
-
-#[derive(Event)]
-pub struct NodeClickedEvent {
-    pub node: Entity,
-}
-
-impl From<ListenerInput<Pointer<Click>>> for NodeClickedEvent {
-    fn from(value: ListenerInput<Pointer<Click>>) -> Self {
-        Self { node: value.target }
-    }
 }
