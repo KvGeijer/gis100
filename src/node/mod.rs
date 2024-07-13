@@ -1,6 +1,7 @@
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use bevy_mod_picking::prelude::*;
 use drag::DragPlugin;
+use rand::Rng;
 use selected::SelectedPlugin;
 
 mod drag;
@@ -24,8 +25,7 @@ impl Plugin for NodePlugin {
                 color: Color::srgb(0.77, 0.74, 0.83),
             })
             .add_plugins(SelectedPlugin)
-            .add_plugins(DragPlugin)
-            ;
+            .add_plugins(DragPlugin);
     }
 }
 
@@ -58,7 +58,7 @@ pub fn spawn_node(
             })
             .into(),
         material: materials.add(color.color.clone()),
-        transform: Transform::from_xyz(x, y, 0.0),
+        transform: Transform::from_xyz(x, y, rand::thread_rng().gen_range(-0.00001..0.00001)),
         ..default()
     };
     commands
